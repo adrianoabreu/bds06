@@ -1,5 +1,7 @@
 package com.devsuperior.movieflix.resources;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,7 +9,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.devsuperior.movieflix.dto.GenreDTO;
 import com.devsuperior.movieflix.dto.UserDTO;
+import com.devsuperior.movieflix.services.GenreService;
 import com.devsuperior.movieflix.services.UserService;
 
 @RestController
@@ -15,17 +19,12 @@ import com.devsuperior.movieflix.services.UserService;
 public class GenreResource {
 
 	@Autowired
-	private UserService service;
+	private GenreService service;
 	
-//	@GetMapping(value = "/{id}")
-//	public ResponseEntity<UserDTO> findById(@PathVariable Long id){	
-//		UserDTO dto = service.findById(id);
-//		return ResponseEntity.ok().body(dto);
-//	}
-	
-	@GetMapping(value = "/profile")
-	public ResponseEntity<UserDTO> currentUserProfile(){		
-		UserDTO dto = service.currentUserProfile();
-		return ResponseEntity.ok().body(dto);
+	@GetMapping  //Determina o Endpoint do controlador REST
+	public ResponseEntity<List<GenreDTO>> findAll(){		
+		//PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("name"));
+		List<GenreDTO> list = service.findAll();
+		return ResponseEntity.ok().body(list);
 	}
 }

@@ -19,7 +19,7 @@ import com.devsuperior.movieflix.services.MovieService;
 import com.devsuperior.movieflix.services.exceptions.ResourceNotFoundException;
 
 @Service
-public class MovieService implements UserDetailsService{
+public class MovieService {
 
 	private static Logger logger = LoggerFactory.getLogger(MovieService.class);
 	
@@ -29,35 +29,5 @@ public class MovieService implements UserDetailsService{
 	@Autowired
 	private AuthService authService;
 	
-	@Transactional(readOnly = true)
-	public UserDTO findById(Long id) {
-		authService.validateSelfOrAdmin(id);		
-		Optional<User> obj = repository.findById(id);
-		User entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
-		return new UserDTO(entity);
-	}
-	
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		
-		User user = repository.findByEmail(username);
-		if(user == null) {
-			logger.error("User not found: " + username);
-			new UsernameNotFoundException("Email not found");
-		}
-		logger.info("User found: " + username);
-		return user;
-	}
-	
-	public UserDTO currentUserProfile() {
-        //Pega o usuario logado
-        User user = authService.authenticated();
-        //Verifica se o usuário é ele mesmo ou admin
-        authService.validateSelfOrAdmin(user.getId());
-        //Popula um DTO com os dados do profile
-        Optional<User> optionalDTO = repository.findById(user.getId());
-        user = optionalDTO.orElseThrow(() -> new ResourceNotFoundException("Entity Not Found."));
-        //Retonra o profile
-        return new UserDTO(user);
-    }
+
 }

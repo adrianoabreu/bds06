@@ -6,25 +6,25 @@ public class ReviewDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
-	private Long   movieId;
+	private Long   id;
 	private String text;
 	
 	public ReviewDTO() {
 		
 	}
 
-	public ReviewDTO(Long movieId, String text) {
+	public ReviewDTO(Long id, String text) {
 		super();
-		this.movieId = movieId;
+		this.id   = id;
 		this.text = text;
 	}
 
-	public Long getMovieId() {
-		return movieId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setMovieId(Long movieId) {
-		this.movieId = movieId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getText() {
@@ -34,7 +34,5 @@ public class ReviewDTO implements Serializable{
 	public void setText(String text) {
 		this.text = text;
 	}
-	
-	
 
 }
