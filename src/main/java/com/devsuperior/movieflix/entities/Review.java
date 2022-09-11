@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
 import com.devsuperior.movieflix.entities.User;
 
@@ -29,9 +30,7 @@ public class Review implements Serializable{
 
 	@ManyToOne
 	@JoinColumn(name = "user_id") //determina a chave estrangeira na tabela tb_notification. 
-	private User user;
-	
-	
+	private User user;	
 	
 	public Review() {
 		

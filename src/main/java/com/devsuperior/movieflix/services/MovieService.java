@@ -1,10 +1,16 @@
 package com.devsuperior.movieflix.services;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,10 +18,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devsuperior.movieflix.dto.MovieDTO;
+import com.devsuperior.movieflix.dto.ReviewDTO;
 import com.devsuperior.movieflix.dto.UserDTO;
 import com.devsuperior.movieflix.entities.Movie;
+import com.devsuperior.movieflix.entities.Review;
 import com.devsuperior.movieflix.entities.User;
 import com.devsuperior.movieflix.repositories.MovieRepository;
+import com.devsuperior.movieflix.repositories.ReviewRepository;
 import com.devsuperior.movieflix.repositories.UserRepository;
 import com.devsuperior.movieflix.services.AuthService;
 import com.devsuperior.movieflix.services.MovieService;
@@ -30,6 +39,9 @@ public class MovieService {
 	private MovieRepository repository;
 	
 	@Autowired
+	private ReviewRepository reviewRepository;
+	
+	@Autowired
 	private AuthService authService;
 
 	@Transactional(readOnly = true)
@@ -38,6 +50,22 @@ public class MovieService {
 //		Product entity = obj.get();
 		Movie entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
 		return new MovieDTO(entity);
+	}
+	
+/*	@Transactional(readOnly = true)
+	public List<MovieDTO> findByIdReviews(Long id) {
+		Movie movie = repository.find(id);
+		List<Movie> movieAndReviews = repository.findMoviesWithReviews(movie);
+//		return new MovieDTO(movie, movieAndReviews);
+		return movieAndReviews.stream().map(x -> new MovieDTO(x,x.getReviews())).collect(Collectors.toList());		
+	}
+*/
+	
+	@Transactional(readOnly = true)
+	public MovieDTO findByIdReviews(Long id) {
+		Movie movie = repository.find(id);
+		List<Review> movieAndReviews = repository.findMoviesWithReviews(movie);
+		return new MovieDTO(movie, movieAndReviews);
 	}
 
 }

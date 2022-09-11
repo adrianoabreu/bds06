@@ -1,10 +1,14 @@
 package com.devsuperior.movieflix.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
-
 import com.devsuperior.movieflix.entities.Movie;
+import com.devsuperior.movieflix.entities.Review;
 import com.devsuperior.movieflix.entities.User;
 
 public class MovieDTO implements Serializable{
@@ -17,6 +21,8 @@ public class MovieDTO implements Serializable{
 	private Integer year;
 	private String imgUrl;
 	private String synopsis;
+	
+	private List<ReviewDTO> reviews = new ArrayList<>();
 	
 	public MovieDTO() {
 		
@@ -38,6 +44,11 @@ public class MovieDTO implements Serializable{
 		this.year     = entity.getYear();
 		this.imgUrl   = entity.getImgUrl();
 		this.synopsis = entity.getSynopsis();
+	}
+	
+	public MovieDTO(Movie entity, List<Review> reviews) {
+		this(entity);
+		reviews.forEach(rev -> this.reviews.add(new ReviewDTO(rev)));
 	}
 
 	public Long getId() {
@@ -88,6 +99,12 @@ public class MovieDTO implements Serializable{
 		this.synopsis = synopsis;
 	}
 
-	
+	public List<ReviewDTO> getReviews() {
+		return reviews;
+	}
+
+	public void setReviews(List<ReviewDTO> reviews) {
+		this.reviews = reviews;
+	}
 
 }
