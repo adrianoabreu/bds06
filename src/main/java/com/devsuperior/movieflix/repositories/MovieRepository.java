@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.devsuperior.movieflix.entities.Genre;
 import com.devsuperior.movieflix.entities.Movie;
 import com.devsuperior.movieflix.entities.Review;
 
@@ -23,4 +24,9 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 	//Resolvendo problema das N+1 consultas
 	@Query("SELECT obj, obj.user.name FROM Review obj INNER JOIN obj.user JOIN FETCH obj.movie WHERE obj.movie = :movie")
 	List<Review> findMoviesWithReviews(Movie movie);
+	
+	@Query("SELECT obj FROM Movie obj INNER JOIN obj.genre WHERE obj.genre = :genre ")
+	Page<Movie> findMoviesByGenre(Genre genre, Pageable pageable);
+	
+	
 }

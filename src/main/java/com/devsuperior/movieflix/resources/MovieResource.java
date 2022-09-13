@@ -30,18 +30,21 @@ public class MovieResource {
 		MovieDTO dto = service.findById(id);
 		return ResponseEntity.ok().body(dto);
 	}
-/*
-	@GetMapping(value = "/{movieId}/reviews")
-	public ResponseEntity<List<MovieDTO>> findByIdReviews(@PathVariable Long movieId){	
-		List<MovieDTO> dto = service.findByIdReviews(movieId);
-		return ResponseEntity.ok().body(dto);
-	}
-*/	
 	
 	@GetMapping(value = "/{movieId}/reviews")
 	public ResponseEntity<MovieDTO> findByIdReviews(@PathVariable Long movieId){	
 		MovieDTO dto = service.findByIdReviews(movieId);
 		return ResponseEntity.ok().body(dto);
+	}
+	
+	@GetMapping  //Determina o Endpoint do controlador REST
+	public ResponseEntity<Page<MovieDTO>> findMoviesByGenre(
+			@RequestParam(value = "genreId", defaultValue = "0") Long genreId,
+          	Pageable pageable){		
+		
+		//Parametros: page, size, sort
+		Page<MovieDTO> list = service.findMoviesByGenre(genreId, pageable);		
+		return ResponseEntity.ok().body(list);
 	}
 
 }
