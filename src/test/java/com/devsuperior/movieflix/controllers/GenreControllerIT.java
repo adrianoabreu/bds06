@@ -41,7 +41,8 @@ public class GenreControllerIT {
 		memberPassword = "123456";
 	}
 
-	@Test
+	// OK
+	@Test     
 	public void findAllShouldReturnUnauthorizedWhenNotValidToken() throws Exception {
 
 		ResultActions result =

@@ -45,7 +45,9 @@ public class ReviewResourceIT {
 		memberUsername = "ana@gmail.com";
 		memberPassword = "123456";
 	}
-
+	
+	
+	// OK
 	@Test
 	public void insertShouldReturnUnauthorizedWhenNotValidToken() throws Exception {
 
@@ -117,7 +119,9 @@ public class ReviewResourceIT {
 		result.andExpect(jsonPath("$.user.name").isNotEmpty());
 		result.andExpect(jsonPath("$.user.email").value(memberUsername));
 	}
-
+	
+	
+	// OK
 	@Test
 	public void insertShouldReturnUnproccessableEntityWhenMemberAuthenticatedAndInvalidData() throws Exception {
 		

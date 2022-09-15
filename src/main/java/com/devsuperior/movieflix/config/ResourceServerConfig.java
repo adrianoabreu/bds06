@@ -25,6 +25,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
 	
 	private static final String[] PUBLIC = {"/oauth/token","/h2-console/**"}; // definição da rota de acesso público, ou seja, que não precisa de login.
 	
+	private static final String[] MEMBER = {"/reviews/**"};
+	
 	@Override
 	public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
 		resources.tokenStore(tokenStore);
@@ -40,6 +42,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
 		
 		http.authorizeRequests()
 		.antMatchers(PUBLIC).permitAll()
+		.antMatchers(HttpMethod.POST, MEMBER).hasRole("MEMBER")
 		.anyRequest().authenticated();
 	}
 
