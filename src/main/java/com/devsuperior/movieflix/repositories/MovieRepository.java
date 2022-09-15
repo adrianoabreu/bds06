@@ -16,7 +16,7 @@ import com.devsuperior.movieflix.entities.Review;
 @Repository
 public interface MovieRepository extends JpaRepository<Movie, Long> {
 
-	
+/*	
 	@Query("SELECT obj FROM Movie obj WHERE "
 	        + "(obj.id = :id) ")
 	Movie find(Long id);
@@ -28,5 +28,11 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 	@Query("SELECT obj FROM Movie obj INNER JOIN obj.genre WHERE obj.genre = :genre ")
 	Page<Movie> findMoviesByGenre(Genre genre, Pageable pageable);
 	
+*/
+	
+	@Query("SELECT obj FROM Movie obj WHERE (obj.genre.id IN :genreId "
+			+ "OR :genreId NOT IN (SELECT obj.genre.id FROM Movie obj)) "
+			+ "ORDER BY obj.title ASC")
+	Page<Movie> findMoviesByGenre(Long genreId, Pageable pageable);
 	
 }

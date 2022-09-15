@@ -47,6 +47,7 @@ public class MovieControllerIT {
 		memberPassword = "123456";
 	}
 
+	// OK
 	@Test
 	public void findByIdShouldReturnUnauthorizedWhenNoTokenGiven() throws Exception {
 
@@ -57,6 +58,7 @@ public class MovieControllerIT {
 		result.andExpect(status().isUnauthorized());
 	}	
 
+	
 	@Test
 	public void findByIdShouldReturnMovieWhenUserVisitorAuthenticated() throws Exception {
 
@@ -101,6 +103,7 @@ public class MovieControllerIT {
 		result.andExpect(jsonPath("$.genre.name").isNotEmpty());
 	}
 
+	// OK
 	@Test
 	public void findByIdShouldReturnNotFoundWhenIdDoesNotExist() throws Exception {
 
@@ -114,6 +117,7 @@ public class MovieControllerIT {
 		result.andExpect(status().isNotFound());
 	}
 	
+	// OK
 	@Test
 	public void findByGenreShouldReturnUnauthorizedWhenNoTokenGiven() throws Exception {
 

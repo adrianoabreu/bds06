@@ -27,6 +27,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
 	
 	private static final String[] MEMBER = {"/reviews/**"};
 	
+	private static final String[] MEMBER_OR_VISITOR = {"/movies/**"};
+	
 	@Override
 	public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
 		resources.tokenStore(tokenStore);
@@ -43,6 +45,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
 		http.authorizeRequests()
 		.antMatchers(PUBLIC).permitAll()
 		.antMatchers(HttpMethod.POST, MEMBER).hasRole("MEMBER")
+		.antMatchers(HttpMethod.GET, MEMBER_OR_VISITOR).hasAnyRole("MEMBER","VISITOR")
 		.anyRequest().authenticated();
 	}
 

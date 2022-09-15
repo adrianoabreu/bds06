@@ -54,20 +54,25 @@ public class MovieService {
 		Optional<Movie> obj = repository.findById(id);
 //		Product entity = obj.get();
 		Movie entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
-		return new MovieDTO(entity);
+		return new MovieDTO(entity, entity.getGenre());
 	}
 	
 	@Transactional(readOnly = true)
 	public MovieDTO findByIdReviews(Long id) {
-		Movie movie = repository.find(id);
+/*		Movie movie = repository.find(id);
 		List<Review> movieAndReviews = repository.findMoviesWithReviews(movie);
 		return new MovieDTO(movie, movieAndReviews);
+		*/
+		Optional<Movie> obj = repository.findById(id);
+		Movie movie = obj.orElseThrow(() -> new ResourceNotFoundException("Id not found " + id));
+		
+		return new MovieDTO(movie);
 	}
 	
 	@Transactional(readOnly = true)
 	public Page<MovieDTO> findMoviesByGenre(Long genreId, Pageable pageable){		
-		Genre genre = genreRepository.getOne(genreId);
-		Page<Movie> page = repository.findMoviesByGenre(genre, pageable);
+		//Genre genre = genreRepository.getOne(genreId);
+		Page<Movie> page = repository.findMoviesByGenre(genreId, pageable);
 		return page.map(x -> new MovieDTO(x));
 	}
 
