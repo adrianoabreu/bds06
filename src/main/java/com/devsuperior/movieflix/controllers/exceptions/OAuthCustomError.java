@@ -1,21 +1,18 @@
-package com.devsuperior.movieflix.resources.exceptions;
+package com.devsuperior.movieflix.controllers.exceptions;
 
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-// Classe auxiliar para retornar o erro padrão do OAuth. 
-public class OAuthCustomError implements Serializable{
-
+public class OAuthCustomError implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private String error;
 	
 	@JsonProperty("error_description")
 	private String errorDescription;
 	
 	public OAuthCustomError() {
-		
 	}
 
 	public OAuthCustomError(String error, String errorDescription) {
@@ -39,7 +36,4 @@ public class OAuthCustomError implements Serializable{
 	public void setErrorDescription(String errorDescription) {
 		this.errorDescription = errorDescription;
 	}
-	
-	
-	
 }

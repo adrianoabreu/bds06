@@ -2,10 +2,10 @@ package com.devsuperior.movieflix.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,41 +15,40 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-
 @Entity
-@Table(name = "tb_movie")  //Anotação que define o nome da tabela no banco de dados
-public class Movie implements Serializable{
-	
+@Table(name = "tb_movie")
+public class Movie implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String title;
 	private String subTitle;
 	private Integer year;
 	private String imgUrl;
+	
+	@Column(columnDefinition = "TEXT")
 	private String synopsis;
 	
 	@ManyToOne
-	@JoinColumn(name = "genre_id") //determina a chave estrangeira na tabela tb_notification. 
+	@JoinColumn(name = "genre_id")
 	private Genre genre;
 	
 	@OneToMany(mappedBy = "movie")
 	private List<Review> reviews = new ArrayList<>();
 	
 	public Movie() {
-		
 	}
 
-	public Movie(Long id, String title, String subTitle, Integer year, String imgUrl, String synopsis) {
-		super();
+	public Movie(Long id, String title, String subTitle, Integer year, String imgUrl, String synopsis, Genre genre) {
 		this.id = id;
 		this.title = title;
 		this.subTitle = subTitle;
 		this.year = year;
 		this.imgUrl = imgUrl;
 		this.synopsis = synopsis;
+		this.genre = genre;
 	}
 
 	public Long getId() {
@@ -100,10 +99,6 @@ public class Movie implements Serializable{
 		this.synopsis = synopsis;
 	}
 
-	public List<Review> getReviews() {
-		return reviews;
-	}
-
 	public Genre getGenre() {
 		return genre;
 	}
@@ -112,12 +107,13 @@ public class Movie implements Serializable{
 		this.genre = genre;
 	}
 
+	public List<Review> getReviews() {
+		return reviews;
+	}
+
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
+		return Objects.hash(id);
 	}
 
 	@Override
@@ -129,15 +125,6 @@ public class Movie implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		Movie other = (Movie) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
+		return Objects.equals(id, other.id);
 	}
-	
-	
-	
-
 }

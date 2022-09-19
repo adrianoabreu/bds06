@@ -97,7 +97,7 @@ public class ReviewResourceIT {
 		
 		ReviewDTO reviewDTO = new ReviewDTO();
 		reviewDTO.setText(reviewText);
-		reviewDTO.setId(movieId);
+		reviewDTO.setMovieId(movieId);
 
 		String jsonBody = objectMapper.writeValueAsString(reviewDTO);
 		

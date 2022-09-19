@@ -1,6 +1,5 @@
 package com.devsuperior.movieflix.config;
 
-	
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,19 +14,20 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 @Configuration
 @EnableResourceServer
-public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
+public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
+
+	private static final String[] PUBLIC = { "/oauth/token", "/h2-console/**" };
 	
-	@Autowired
-	private Environment env;
+	private static final String[] VISITOR_OR_MEMBER = { "/users/profile/**", 
+									"/movies/**", "/genres/**" };
+	
+	private static final String[] REVIEW_VISITOR_OR_MEMBER  = { "/review/**" };
 	
 	@Autowired
 	private JwtTokenStore tokenStore;
 	
-	private static final String[] PUBLIC = {"/oauth/token","/h2-console/**"}; // definição da rota de acesso público, ou seja, que não precisa de login.
-	
-	private static final String[] MEMBER = {"/reviews/**"};
-	
-	private static final String[] MEMBER_OR_VISITOR = {"/movies/**"};
+	@Autowired
+	private Environment env;
 	
 	@Override
 	public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
@@ -37,17 +37,14 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
 		
-		// Configuração para liberar o banco de dados H2.
 		if(Arrays.asList(env.getActiveProfiles()).contains("test")) {
 			http.headers().frameOptions().disable();
 		}
 		
 		http.authorizeRequests()
 		.antMatchers(PUBLIC).permitAll()
-		.antMatchers(HttpMethod.POST, MEMBER).hasRole("MEMBER")
-		.antMatchers(HttpMethod.GET, MEMBER_OR_VISITOR).hasAnyRole("MEMBER","VISITOR")
+		.antMatchers(HttpMethod.GET, VISITOR_OR_MEMBER ).hasAnyRole("VISITOR", "MEMBER")
+		.antMatchers(HttpMethod.POST, REVIEW_VISITOR_OR_MEMBER ).hasAnyRole("VISITOR", "MEMBER")
 		.anyRequest().authenticated();
 	}
-
-	
 }

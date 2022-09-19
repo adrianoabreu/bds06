@@ -1,4 +1,4 @@
-package com.devsuperior.movieflix.resources.exceptions;
+package com.devsuperior.movieflix.controllers.exceptions;
 
 import java.time.Instant;
 
@@ -11,19 +11,18 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.devsuperior.movieflix.services.exceptions.DatabaseException;
 import com.devsuperior.movieflix.services.exceptions.ForbiddenException;
 import com.devsuperior.movieflix.services.exceptions.ResourceNotFoundException;
 import com.devsuperior.movieflix.services.exceptions.UnauthorizedException;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {
-	
+
 	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<StandardError> entityNotFound(ResourceNotFoundException e, HttpServletRequest request){
+	public ResponseEntity<StandardError> resourceNotFoundException(ResourceNotFoundException e, HttpServletRequest request){
 		HttpStatus status = HttpStatus.NOT_FOUND;
 		StandardError err = new StandardError();
-		err.setTimestamp(Instant.now());
+		err.setTimestatus(Instant.now());
 		err.setStatus(status.value());
 		err.setError("Resource not found");
 		err.setMessage(e.getMessage());
@@ -31,30 +30,18 @@ public class ResourceExceptionHandler {
 		return ResponseEntity.status(status).body(err);
 	}
 	
-	@ExceptionHandler(DatabaseException.class)
-	public ResponseEntity<StandardError> database(DatabaseException e, HttpServletRequest request){
-		HttpStatus status = HttpStatus.BAD_REQUEST; // código 404
-		StandardError err = new StandardError();
-		err.setTimestamp(Instant.now());
-		err.setStatus(status.value());
-		err.setError("Database exception");
-		err.setMessage(e.getMessage());
-		err.setPath(request.getRequestURI());
-		return ResponseEntity.status(status).body(err);
-	}
-	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ValidationError> validation(MethodArgumentNotValidException e, HttpServletRequest request){
-		HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY; // código 422
+	public ResponseEntity<ValidationError> validateException(MethodArgumentNotValidException e, HttpServletRequest request){
+		HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
 		ValidationError err = new ValidationError();
-		err.setTimestamp(Instant.now());
+		err.setTimestatus(Instant.now());
 		err.setStatus(status.value());
 		err.setError("Validation exception");
 		err.setMessage(e.getMessage());
 		err.setPath(request.getRequestURI());
 		
-		for(FieldError f : e.getBindingResult().getFieldErrors()) {
-			err.addError(f.getField(), f.getDefaultMessage());
+		for (FieldError f: e.getBindingResult().getFieldErrors()) {
+			err.addFieldErrors(f.getField(), f.getDefaultMessage());
 		}
 		
 		return ResponseEntity.status(status).body(err);
@@ -62,16 +49,13 @@ public class ResourceExceptionHandler {
 	
 	@ExceptionHandler(ForbiddenException.class)
 	public ResponseEntity<OAuthCustomError> forbidden(ForbiddenException e, HttpServletRequest request){
-		HttpStatus status = HttpStatus.FORBIDDEN; // código 403
 		OAuthCustomError err = new OAuthCustomError("Forbidden", e.getMessage());
-		return ResponseEntity.status(status).body(err);
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
 	}
 	
 	@ExceptionHandler(UnauthorizedException.class)
-	public ResponseEntity<OAuthCustomError> unauthorized(UnauthorizedException e, HttpServletRequest request){
-		HttpStatus status = HttpStatus.UNAUTHORIZED; // código 401
+	public ResponseEntity<OAuthCustomError> forbidden(UnauthorizedException e, HttpServletRequest request){
 		OAuthCustomError err = new OAuthCustomError("Unauthorized", e.getMessage());
-		return ResponseEntity.status(status).body(err);
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(err);
 	}
-	
 }

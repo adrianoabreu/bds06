@@ -14,12 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.devsuperior.movieflix.dto.UserDTO;
 import com.devsuperior.movieflix.entities.User;
 import com.devsuperior.movieflix.repositories.UserRepository;
-import com.devsuperior.movieflix.services.AuthService;
-import com.devsuperior.movieflix.services.UserService;
 import com.devsuperior.movieflix.services.exceptions.ResourceNotFoundException;
 
 @Service
-public class UserService implements UserDetailsService{
+public class UserService implements UserDetailsService {
 
 	private static Logger logger = LoggerFactory.getLogger(UserService.class);
 	
@@ -29,36 +27,23 @@ public class UserService implements UserDetailsService{
 	@Autowired
 	private AuthService authService;
 	
-	@Transactional(readOnly = true)
-	public UserDTO findById(Long id) {
-		authService.validateSelfOrAdmin(id);		
-		Optional<User> obj = repository.findById(id);
-		User entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
-		return new UserDTO(entity);
+	@Transactional(readOnly  = true)
+	public UserDTO loggedUser() {
+		authService.validateSelf();
+		User user = authService.authenticated();
+		Optional<User> obj = repository.findById(user.getId());
+		User loggedUser = obj.orElseThrow(() -> new ResourceNotFoundException("User not found " + user.getEmail()));
+		return new UserDTO(loggedUser);
 	}
-	
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		
 		User user = repository.findByEmail(username);
-		if(user == null) {
-			logger.error("User not found: " + username);
-			new UsernameNotFoundException("Email not found");
+		if (user == null) {
+			logger.error("User not found " + username);
+			throw new UsernameNotFoundException("Email not found");
 		}
-		logger.info("User found: " + username);
+		logger.info("User found " + username);
 		return user;
 	}
-	
-	public UserDTO currentUserProfile() {
-        //Pega o usuario logado
-        User user = authService.authenticated();
-        //Verifica se o usuário é ele mesmo ou admin
-        authService.validateSelfOrAdmin(user.getId());
-        //Popula um DTO com os dados do profile
-        Optional<User> optionalDTO = repository.findById(user.getId());
-        user = optionalDTO.orElseThrow(() -> new ResourceNotFoundException("Entity Not Found."));
-        //Retonra o profile
-        return new UserDTO(user);
-    }
-
 }
